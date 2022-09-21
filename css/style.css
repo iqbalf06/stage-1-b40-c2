@@ -1,0 +1,149 @@
+body {
+    background-color: rgb(230, 230, 230) !important;
+}
+
+section {
+    background-color: white !important;
+}
+
+.text-orange {
+    color: rgb(4, 4, 67) !important;
+}
+
+.bg-orange {
+    background-color: rgb(4, 4, 67) !important;
+}
+
+.nav {
+    height: 7vh;
+}
+/* card */
+.text-title {
+    margin-top:2px !important;
+    margin-bottom: 2px !important;
+}
+
+/* form add-project */
+.container-fluid {
+    height: 93vh;
+  }
+  
+  .container-form {
+    width: 400px;
+  }
+  
+  .inputDate {
+    display: flex;
+  }
+  
+  .Startdate {
+    margin-right: 75px;
+  }
+  
+  /* checkbox */
+  .input-checkbox {
+  width: 10px;
+  zoom: 1.5;
+  }
+  
+  
+  .checkbox {
+  display: flex;
+  margin-top: 10px;
+  }
+  
+  .checkbox-left {
+  flex: 50%;
+  }
+  
+  .checkbox-right {
+  flex: 50%;
+  }
+  
+  
+  .form-control {
+    box-shadow: 0px 5px 18px 0px rgb(214, 213, 213);
+  }
+  
+
+
+/* project list */
+
+.project-list {
+    display: grid;
+    grid-template-columns: auto auto auto;
+  }
+  
+  .project-list-item {
+    margin: 80px 80px 80px 80px;
+    width: 350px;
+    height: 520px;
+    background-color: whitesmoke;
+    border-radius: 10px;
+    box-shadow: 0px 9px 20px grey;
+    padding: 12px;
+  
+  }
+  
+    
+  .project-image img {
+    object-fit: cover;
+    width: 100%;
+    border-radius: 8px;
+  }
+    
+  .logo-icon i {
+    padding-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 30px;
+    
+  }
+    
+  .duration-project {
+    font-size: small;
+    color: grey;
+  }
+    
+  .description {
+    margin-top: 10px;
+    display: flex;
+  }
+    
+  .btn-group {
+    display: flex;
+    
+  }
+    
+  .btn-edit {
+    flex: 50%;
+    margin-right: 5px;
+    text-align: center;
+    
+    width: 100%;
+    margin-left: 15px;
+    border-radius: 5px;
+    padding-top: 2px;
+    padding-right: 5px;
+  }
+    
+  .btn-delete {
+    flex: 50%;
+    margin-left: 5px;
+    text-align: center;
+    
+    width: 100%;
+    margin-right: 15px;
+    border-radius: 5px;
+    padding-top: 2px;
+  } 
+    
+    
+  .judul-description {
+    text-decoration: none;
+    color: #000000;
+    margin-top: 10px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: medium;
+  }
+  
