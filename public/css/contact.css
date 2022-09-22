@@ -1,0 +1,60 @@
+body {
+  background-color: lightgrey !important;
+}
+
+.text-orange {
+  color: rgb(4, 4, 67) !important;
+}
+  
+.bg-orange {
+  background-color: rgb(4, 4, 67) !important;
+}
+  
+form {
+    margin: 0px auto;
+    width: 350px;
+    padding: 10px;
+    /* background-color: red; */
+}
+
+.container-fluid {
+    height: 86vh;
+  }
+    
+.container-form {
+    width: 400px;
+}
+
+.form-control {
+    box-shadow: 0px 5px 18px 0px rgb(214, 213, 213);
+}
+
+form input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    resize: none;
+    margin-top: 5px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 5px;
+    border: 1px solid rgb(231, 231, 231);
+    box-shadow: 0px 0px 18px rgb(214, 213, 213);
+}
+
+form button {
+    background-color: rgb(27, 16, 54);
+    color: white;
+    margin-top: 10px;
+    padding: 8px 30px; /* atas bawah */ 
+    border: none;
+    border-radius: 20px;
+    font-weight: bolder;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.Submit{
+    display: flex;
+    padding: 10px auto;
+    justify-content:flex-end;
+    align-items: center;
+}

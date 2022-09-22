@@ -1,0 +1,91 @@
+body {
+  background-color: lightgrey !important;
+}
+
+.text-orange {
+  color: rgb(4, 4, 67) !important;
+}
+
+.bg-orange {
+  background-color: rgb(4, 4, 67) !important;
+}
+
+.nav {
+  height: 7vh;
+}
+
+
+/* Project Detail */
+.project-detail h1 {
+text-align: center;
+margin-top: 50px;
+margin-bottom: 50px;
+}
+
+.project-detail .project-detail-header {
+  display: flex;
+  width: 100%;
+  margin-bottom: 50px;
+}
+
+.project-detail .project-detail-header .image-detail {
+  flex:60%;
+
+}
+
+.project-detail .project-detail-header img {
+  width: 900px;
+  height: 500px;
+  padding-left: 50px;
+ 
+}
+
+
+.project-detail .project-detail-header .detail-description {
+  flex:40%;
+  
+  padding-left: 50px;
+
+}
+
+
+.detail-description .title-description {
+margin-bottom: 20px;
+margin-top: 10px;
+font-weight: bold;
+font-size: 40;
+}
+
+.icon-desc {
+  font-size: 20;
+  margin-bottom:20px;
+}
+
+.detail-description .title-description2 {
+  margin-top: 50px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  font-size: 40;
+  }
+
+.title-icon {
+  display: flex;
+}
+.icon1 {
+  flex:50%;
+}
+
+.icon2 {
+  flex:50%;
+}
+
+.project-detail-container {
+  padding-left: 50px;
+  padding-right: 50px;
+  text-align: justify;
+  padding-bottom: 50px;
+}
+
+.project-detail-container p {
+  line-height: 1.6;
+}
