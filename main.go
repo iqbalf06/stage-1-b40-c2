@@ -12,12 +12,12 @@ import (
 
 func main() {
 
-	route := mux.NewRouter()
+	route := mux.NewRouter() //variabel route dari mux router
 
-	// path folder public (js,css,images)
+	// route path folder public (js,css,images)
 	route.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public"))))
 
-	//routing
+	//routing, menjalankan function home
 	route.HandleFunc("/", home).Methods("GET")
 	route.HandleFunc("/add-project", formAddProject).Methods("GET")
 	route.HandleFunc("/add-project", addProject).Methods("POST")
@@ -30,6 +30,18 @@ func main() {
 }
 
 // menampilkan page dan data
+func home(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	var tmpl, err = template.ParseFiles("views/index.html")
+
+	if err != nil { //untuk handle error. agar tau errornya
+		w.Write([]byte("message : " + err.Error())) //byte untuk menampilkan string jika ada error
+		return
+	}
+
+	tmpl.Execute(w, nil) //menampilkan response dari views
+}
+
 func formAddProject(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	var tmpl, err = template.ParseFiles("views/add-project.html")
@@ -45,6 +57,7 @@ func formAddProject(w http.ResponseWriter, r *http.Request) {
 // function untuk memasukkan data
 func addProject(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
+
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -54,22 +67,11 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Enddate: " + r.PostForm.Get("inputEnddate"))
 	fmt.Println("Description: " + r.PostForm.Get("inputDescription"))
 
-	http.Redirect(w, r, "/", http.StatusMovedPermanently)
+	http.Redirect(w, r, "/", http.StatusMovedPermanently) //untuk meredirect kehalaman home.
 
 }
 
-func home(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	var tmpl, err = template.ParseFiles("views/index.html")
-
-	if err != nil {
-		w.Write([]byte("message : " + err.Error()))
-		return
-	}
-
-	tmpl.Execute(w, nil)
-}
-
+// menampilkan page dan data
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	var tmpl, err = template.ParseFiles("views/contact.html")
@@ -92,12 +94,11 @@ func myProjectDetail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	id, _ := strconv.Atoi(mux.Vars(r)["name"])
-	fmt.Println(id)
 
+	//mengirimkan data string ke dalam interface
 	response := map[string]interface{}{
-		"Title":       "Hallo",
-		"Id":          "id",
-		"Description": "test description",
+		"ProjectName": "Dumbways Mobile Apps 2022",
+		"Id":          id,
 	}
 
 	tmpl.Execute(w, response)
