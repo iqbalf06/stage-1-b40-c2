@@ -1,5 +1,5 @@
 body {
-  background-color: lightgrey !important;
+  background-color: rgb(218, 231, 235) !important;
 }
 
 .text-orange {
@@ -17,9 +17,9 @@ body {
 
 /* Project Detail */
 .project-detail h1 {
-text-align: center;
-margin-top: 50px;
-margin-bottom: 50px;
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 .project-detail .project-detail-header {
@@ -29,7 +29,7 @@ margin-bottom: 50px;
 }
 
 .project-detail .project-detail-header .image-detail {
-  flex:60%;
+  flex: 60%;
 
 }
 
@@ -37,28 +37,27 @@ margin-bottom: 50px;
   width: 900px;
   height: 500px;
   padding-left: 50px;
- 
+
 }
 
 
 .project-detail .project-detail-header .detail-description {
-  flex:40%;
-  
+  flex: 40%;
   padding-left: 50px;
 
 }
 
 
 .detail-description .title-description {
-margin-bottom: 20px;
-margin-top: 10px;
-font-weight: bold;
-font-size: 40;
+  margin-bottom: 20px;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 40;
 }
 
 .icon-desc {
   font-size: 20;
-  margin-bottom:20px;
+  margin-bottom: 20px;
 }
 
 .detail-description .title-description2 {
@@ -66,17 +65,18 @@ font-size: 40;
   margin-bottom: 20px;
   font-weight: bold;
   font-size: 40;
-  }
+}
 
 .title-icon {
   display: flex;
 }
+
 .icon1 {
-  flex:50%;
+  flex: 50%;
 }
 
 .icon2 {
-  flex:50%;
+  flex: 50%;
 }
 
 .project-detail-container {
