@@ -131,14 +131,14 @@
               <div class="card-body">
                 <a class="card-title text-decoration-none fw-bold text-dark fs-5"
                   href="/myproject-detail/{{$index}}" target="_blank">{{$data.ProjectName}}</a>
-                <p class="text-muted">duration: 3 month</p>
+                <p class="text-muted">duration: {{$data.Duration}}</p>
                 <p class="card-text" style="height: 30%;">{{$data.Description}}</p>
 
                 <div class="logo-icon">
-                  <i class="fa-brands fa-node-js"></i>
-                  <i class="fa-brands fa-react"></i>
-                  <i class="fa-brands fa-java"></i>
-                  <i class="fa-brands fa-python"></i>
+                  <i class="fa-brands fa-{{$data.Nodejs}}"></i>
+                  <i class="fa-brands fa-{{$data.React}}"></i>
+                  <i class="fa-brands fa-{{$data.Java}}"></i>
+                  <i class="fa-brands fa-{{$data.Python}}"></i>
                 </div>
 
                 <div class="btn-group">

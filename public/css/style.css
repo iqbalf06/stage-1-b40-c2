@@ -21,11 +21,6 @@ body {
   margin-bottom: 2px !important;
 }
 
-/* form add-project */
-/* .container-fluid {
-  height: 93vh;
-} */
-
 .container-form {
   width: 400px;
 }
@@ -62,61 +57,6 @@ body {
 .form-control {
   box-shadow: 0px 5px 18px 0px rgb(214, 213, 213);
 }
-
-
-
-/* project list */
-
-/* .card-id {
-  padding-left: 100px !important;
-}
-
-.project-list {
-  display: grid;
-  grid-template-columns: auto auto auto;
-}
-
-.project-list-item {
-  margin: 80px 80px 80px 80px;
-  width: 350px;
-  height: 520px;
-  background-color: whitesmoke;
-  border-radius: 10px;
-  box-shadow: 0px 9px 20px grey;
-  padding: 12px;
-
-}
-
-.project-image img {
-  object-fit: cover;
-  width: 100%;
-  border-radius: 8px;
-}
-
-.judul-description {
-  text-decoration: none;
-  color: #000000;
-  margin-top: 10px;
-  font-family: 'Times New Roman', Times, serif;
-  font-size: medium;
-}
-
-.duration-project {
-  font-size: small;
-  color: grey;
-}
-
-.description {
-  margin-top: 10px;
-  display: flex;
-}*/
-
-.logo-icon i {
-  padding-right: 10px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  font-size: 30px;
-} 
 
 .btn-edt {
   margin-right: 90px !important;

@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
 	"text/template"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -17,13 +19,16 @@ func main() {
 	// route path folder public (js,css,images)
 	route.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public"))))
 
-	//routing, menjalankan function home
+	//routing, menjalankan function home dll
 	route.HandleFunc("/", home).Methods("GET")
 	route.HandleFunc("/add-project", formAddProject).Methods("GET")
 	route.HandleFunc("/add-project", addProject).Methods("POST")
 	route.HandleFunc("/contact", contact).Methods("GET")
-	route.HandleFunc("/myproject-detail/{index}", myProjectDetail).Methods("GET")
+	route.HandleFunc("/myproject-detail/{index}", myProjectDetail).Methods("GET") //index url params
+	route.HandleFunc("/project-detail", projectDetail).Methods("GET")
 	route.HandleFunc("/delete-project/{index}", deleteProject).Methods("GET")
+	// route.HandleFunc("/update-project/{index}", formUpdateProject).Methods("GET")
+	// route.HandleFunc("/update-project/{index}", updateProject).Methods("POST")
 
 	fmt.Println("server running on port 5000")
 	http.ListenAndServe("localhost:5000", route)
@@ -63,7 +68,14 @@ func formAddProject(w http.ResponseWriter, r *http.Request) {
 // type data untuk variabel object
 type Project struct {
 	ProjectName string
+	StartDate   string
+	EndDate     string
 	Description string
+	Nodejs      string
+	React       string
+	Java        string
+	Python      string
+	Duration    string
 }
 
 // deklarasi variabel global = array/slice
@@ -77,21 +89,53 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	// fmt.Println("Project Name: " + r.PostForm.Get("inputProjectName")) //get value data dari tag input name
-	// fmt.Println("Startdate: " + r.PostForm.Get("inputStartdate"))
-	// fmt.Println("Enddate: " + r.PostForm.Get("inputEnddate"))
-	// fmt.Println("Description: " + r.PostForm.Get("inputDescription"))
-
 	//variabel object untuk menampung data dari tag input.
 	var projectName = r.PostForm.Get("inputProjectName")
-	// var startdate = r.PostForm.Get("innputStartdate")
-	// var enddate = r.PostForm.Get("innputEnddate")
+	var startDate = r.PostForm.Get("inputStartdate")
+	var endDate = r.PostForm.Get("inputEnddate")
 	var description = r.PostForm.Get("inputDescription")
+	nodejs := r.PostForm.Get("nodejs")
+	react := r.PostForm.Get("react")
+	java := r.PostForm.Get("java")
+	python := r.PostForm.Get("python")
+
+	layout := "2006-01-02"
+	startDateParse, _ := time.Parse(layout, startDate)
+	endDateParse, _ := time.Parse(layout, endDate)
+
+	hours := endDateParse.Sub(startDateParse).Hours()
+	days := hours / 24
+	weeks := math.Round(days / 7)
+	months := math.Round(days / 30)
+	years := math.Round(days / 365)
+
+	var duration string
+
+	if years > 0 {
+		duration = strconv.FormatFloat(years, 'f', 0, 64) + "year"
+	} else if months > 0 {
+		duration = strconv.FormatFloat(months, 'f', 0, 64) + " Month"
+	} else if weeks > 0 {
+		duration = strconv.FormatFloat(weeks, 'f', 0, 64) + " Week"
+	} else if days > 0 {
+		duration = strconv.FormatFloat(days, 'f', 0, 64) + " Day"
+	} else if hours > 0 {
+		duration = strconv.FormatFloat(hours, 'f', 0, 64) + " Hour"
+	} else {
+		duration = "0 Days"
+	}
 
 	//pemanggilan type struct dan variabel global dan object diatas, sama seperti object di JS
 	var newProject = Project{ //type struct dari Project
 		ProjectName: projectName,
+		StartDate:   startDate,
+		EndDate:     endDate,
 		Description: description,
+		Nodejs:      nodejs,
+		React:       react,
+		Java:        java,
+		Python:      python,
+		Duration:    duration,
 	}
 
 	// untuk push / append data
@@ -135,18 +179,19 @@ func myProjectDetail(w http.ResponseWriter, r *http.Request) {
 			ProjectDetail = Project{
 				ProjectName: data.ProjectName,
 				Description: data.Description,
+				StartDate:   data.StartDate,
+				EndDate:     data.EndDate,
+				Duration:    data.Duration,
+				Nodejs:      data.Nodejs,
+				React:       data.React,
+				Java:        data.Java,
+				Python:      data.Python,
 			}
 		}
 	}
 
-	// //mengirimkan data string ke dalam interface
-	// response := map[string]interface{}{
-	// 	"ProjectName": "Dumbways Mobile Apps 2022",
-	// 	"Index":       index,
-	// }
-
-	data := map[string]interface{}{
-		"Project": ProjectDetail,
+	data := map[string]interface{}{ //variabel data
+		"Project": ProjectDetail, //properti dan isinya
 	}
 
 	// fmt.Println(data)
@@ -154,6 +199,40 @@ func myProjectDetail(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, data)
 
 }
+
+// func formUpdateProject(w http.ResponseWriter, r *http.Request) {
+// 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+// 	var tmpl, err = template.ParseFiles("views/update-project.html")
+
+// 	if err != nil {
+// 		w.Write([]byte("message : " + err.Error()))
+// 		return
+// 	}
+
+// 	tmpl.Execute(w, nil)
+// }
+
+// func updateProject(w http.ResponseWriter, r *http.Request) {
+// 	err := r.ParseForm()
+
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+
+// 	index, _ := strconv.Atoi(mux.Vars(r)["index"])
+
+// 	for index, dataProject := range dataProject {
+// 		if dataProject.ProjectName =
+// 	}
+
+// 	// untuk push / append data
+// 	dataProject = append(dataProject, newProject) //penampung dan isi data
+
+// 	fmt.Println(dataProject)
+
+// 	http.Redirect(w, r, "/", http.StatusMovedPermanently) //untuk meredirect kehalaman home.
+
+// }
 
 func deleteProject(w http.ResponseWriter, r *http.Request) {
 
@@ -163,5 +242,18 @@ func deleteProject(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(dataProject)
 
 	http.Redirect(w, r, "/", http.StatusMovedPermanently) //untuk meredirect kehalaman home.
+
+}
+
+func projectDetail(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	var tmpl, err = template.ParseFiles("views/project-detail.html")
+
+	if err != nil {
+		w.Write([]byte("message : " + err.Error()))
+		return
+	}
+
+	tmpl.Execute(w, nil)
 
 }

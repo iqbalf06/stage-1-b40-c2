@@ -49,18 +49,23 @@
       </div>
       <div class="detail-description">
         <p class="title-description"> Duration </p>
-        <p class="icon-desc"> <i class="fa-solid fa-calendar-days"></i> 12 Jan 2021 - 11 Feb 2021 </p>
-        <p class="icon-desc"> <i class="fa-solid fa-clock-rotate-left"></i> 1 month </p>
+        <p class="icon-desc"> <i class="fa-solid fa-calendar-days fa-lg"></i> {{.Project.StartDate}} -
+          {{.Project.EndDate}} </p>
+        <p class="icon-desc"> <i class="fa-solid fa-clock-rotate-left fa-lg"></i> {{.Project.Duration}} </p>
 
         <p class="title-description2"> Technologies </p>
         <div class="title-icon">
           <div class="icon1">
-            <p class="icon-desc"> <i class="fa-brands fa-node-js"></i> Node Js </p>
-            <p class="icon-desc"> <i class="fa-brands fa-react"></i> React Js </p>
+            <p class="icon-desc text-capitalize"> <i class="fa-brands fa-{{.Project.Nodejs}} fa-xl"></i>
+              {{.Project.Nodejs}} </p>
+            <p class="icon-desc text-capitalize"> <i class="fa-brands fa-{{.Project.React}} fa-xl"></i>
+              {{.Project.React}} </p>
           </div>
           <div class="icon2">
-            <p class="icon-desc"> <i class="fa-brands fa-java"></i> Java </p>
-            <p class="icon-desc"> <i class="fa-brands fa-python"></i> Python </p>
+            <p class="icon-desc text-capitalize"> <i class="fa-brands fa-{{.Project.Java}} fa-xl"></i> {{.Project.Java}}
+            </p>
+            <p class="icon-desc text-capitalize"> <i class="fa-brands fa-{{.Project.Python}} fa-xl"></i>
+              {{.Project.Python}} </p>
           </div>
         </div>
       </div>
