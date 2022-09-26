@@ -1,0 +1,15 @@
+body {
+  background-color: rgb(218, 231, 235) !important;
+}
+
+.text-orange {
+  color: rgb(4, 4, 67) !important;
+}
+
+.bg-orange {
+  background-color: rgb(4, 4, 67) !important;
+}
+
+.nav {
+  height: 7vh;
+}
