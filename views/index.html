@@ -130,15 +130,15 @@
               <img src="/public/images/img-card1.jpg" class="card-img-top rounded-2" alt="...">
               <div class="card-body">
                 <a class="card-title text-decoration-none fw-bold text-dark fs-5"
-                  href="/myproject-detail/{{$index}}" target="_blank">{{$data.ProjectName}}</a>
+                  href="/project-detail/{{$index}}" target="_blank">{{$data.ProjectName}}</a>
                 <p class="text-muted">duration: {{$data.Duration}}</p>
                 <p class="card-text" style="height: 30%;">{{$data.Description}}</p>
 
-                <div class="logo-icon">
-                  <i class="fa-brands fa-{{$data.Nodejs}}"></i>
-                  <i class="fa-brands fa-{{$data.React}}"></i>
-                  <i class="fa-brands fa-{{$data.Java}}"></i>
-                  <i class="fa-brands fa-{{$data.Python}}"></i>
+                <div class="col py-3">
+                  <i class="fa-brands fa-{{$data.Nodejs}} fa-2xl"></i>
+                  <i class="fa-brands fa-{{$data.React}} fa-2xl"></i>
+                  <i class="fa-brands fa-{{$data.Java}} fa-2xl"></i>
+                  <i class="fa-brands fa-{{$data.Python}} fa-2xl"></i>
                 </div>
 
                 <div class="btn-group">

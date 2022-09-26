@@ -24,11 +24,10 @@ func main() {
 	route.HandleFunc("/add-project", formAddProject).Methods("GET")
 	route.HandleFunc("/add-project", addProject).Methods("POST")
 	route.HandleFunc("/contact", contact).Methods("GET")
-	route.HandleFunc("/myproject-detail/{index}", myProjectDetail).Methods("GET") //index url params
-	route.HandleFunc("/project-detail", projectDetail).Methods("GET")
+	route.HandleFunc("/project-detail/{index}", projectDetail).Methods("GET") //index url params
 	route.HandleFunc("/delete-project/{index}", deleteProject).Methods("GET")
-	// route.HandleFunc("/update-project/{index}", formUpdateProject).Methods("GET")
-	// route.HandleFunc("/update-project/{index}", updateProject).Methods("POST")
+	route.HandleFunc("/update-project/{index}", formUpdateProject).Methods("GET")
+	route.HandleFunc("/update-project/{index}", updateProject).Methods("POST")
 
 	fmt.Println("server running on port 5000")
 	http.ListenAndServe("localhost:5000", route)
@@ -99,7 +98,7 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 	java := r.PostForm.Get("java")
 	python := r.PostForm.Get("python")
 
-	layout := "2006-01-02"
+	layout := ("2006-01-02").format("2 January 2006")
 	startDateParse, _ := time.Parse(layout, startDate)
 	endDateParse, _ := time.Parse(layout, endDate)
 
@@ -160,9 +159,9 @@ func contact(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
-func myProjectDetail(w http.ResponseWriter, r *http.Request) {
+func projectDetail(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	var tmpl, err = template.ParseFiles("views/myproject-detail.html")
+	var tmpl, err = template.ParseFiles("views/project-detail.html")
 
 	if err != nil {
 		w.Write([]byte("message : " + err.Error()))
@@ -200,40 +199,6 @@ func myProjectDetail(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// func formUpdateProject(w http.ResponseWriter, r *http.Request) {
-// 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-// 	var tmpl, err = template.ParseFiles("views/update-project.html")
-
-// 	if err != nil {
-// 		w.Write([]byte("message : " + err.Error()))
-// 		return
-// 	}
-
-// 	tmpl.Execute(w, nil)
-// }
-
-// func updateProject(w http.ResponseWriter, r *http.Request) {
-// 	err := r.ParseForm()
-
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	index, _ := strconv.Atoi(mux.Vars(r)["index"])
-
-// 	for index, dataProject := range dataProject {
-// 		if dataProject.ProjectName =
-// 	}
-
-// 	// untuk push / append data
-// 	dataProject = append(dataProject, newProject) //penampung dan isi data
-
-// 	fmt.Println(dataProject)
-
-// 	http.Redirect(w, r, "/", http.StatusMovedPermanently) //untuk meredirect kehalaman home.
-
-// }
-
 func deleteProject(w http.ResponseWriter, r *http.Request) {
 
 	index, _ := strconv.Atoi(mux.Vars(r)["index"])
@@ -245,9 +210,9 @@ func deleteProject(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func projectDetail(w http.ResponseWriter, r *http.Request) {
+func formUpdateProject(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	var tmpl, err = template.ParseFiles("views/project-detail.html")
+	var tmpl, err = template.ParseFiles("views/update-project.html")
 
 	if err != nil {
 		w.Write([]byte("message : " + err.Error()))
@@ -255,5 +220,37 @@ func projectDetail(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tmpl.Execute(w, nil)
+}
 
+func updateProject(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+var
+	index, _ := strconv.Atoi(mux.Vars(r)["index"])
+
+	for i, data := range dataProject {
+		if i == index { //kondisi index looping = index url params
+			ProjectDetail = Project{
+				ProjectName: data.ProjectName,
+				Description: data.Description,
+				StartDate:   data.StartDate,
+				EndDate:     data.EndDate,
+				Duration:    data.Duration,
+				Nodejs:      data.Nodejs,
+				React:       data.React,
+				Java:        data.Java,
+				Python:      data.Python,
+			}
+		}
+	}
+	data := map[string]interface{}{ //variabel data
+		"Project": ProjectDetail, //properti dan isinya
+	}
+	fmt.Println(dataProject)
+
+	http.Redirect(w, r, "/", http.StatusMovedPermanently) //untuk meredirect kehalaman home.
 }
