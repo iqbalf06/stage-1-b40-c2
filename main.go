@@ -98,7 +98,7 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 	java := r.PostForm.Get("java")
 	python := r.PostForm.Get("python")
 
-	layout := ("2006-01-02").format("2 January 2006")
+	layout := ("2006-01-02")
 	startDateParse, _ := time.Parse(layout, startDate)
 	endDateParse, _ := time.Parse(layout, endDate)
 
@@ -219,6 +219,10 @@ func formUpdateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	index, _ := strconv.Atoi(mux.Vars(r)["index"])
+	dataProject = append(dataProject[:index])
+	fmt.Println(dataProject)
+
 	tmpl.Execute(w, nil)
 }
 
@@ -229,12 +233,12 @@ func updateProject(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-var
+	var UpdateProject = Project{}
 	index, _ := strconv.Atoi(mux.Vars(r)["index"])
 
 	for i, data := range dataProject {
-		if i == index { //kondisi index looping = index url params
-			ProjectDetail = Project{
+		if index == i { //kondisi index looping = index url params
+			UpdateProject = Project{
 				ProjectName: data.ProjectName,
 				Description: data.Description,
 				StartDate:   data.StartDate,
@@ -247,8 +251,8 @@ var
 			}
 		}
 	}
-	data := map[string]interface{}{ //variabel data
-		"Project": ProjectDetail, //properti dan isinya
+	dataProject := map[string]interface{}{ //variabel data
+		"Project": UpdateProject, //properti dan isinya
 	}
 	fmt.Println(dataProject)
 
