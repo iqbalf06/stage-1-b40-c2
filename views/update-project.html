@@ -45,21 +45,21 @@
   <div class="container-fluid d-flex justify-content-center align-items-center">
     <div class="container-form">
       <h2 class="mb-5 fw-bold text-center my-3">ADD MY PROJECT</h2>
-      <form action="/add-project" method="post">
+      <form action="/submit-update/{{.UpdateProject.Id}}" method="post">
         <div class="mb-3">
           <label for="inputProjectName" class="form-label fw-bold">Project Name</label>
-          <input type="text" class="form-control border-success" id="inputProjectName" name="inputProjectName">
+          <input type="text" class="form-control border-success" id="inputProjectName" name="inputProjectName" value="{{.UpdateProject.ProjectName}}">
         </div>
 
         <div class="inputDate">
           <div class="Startdate mb-4">
             <label for="inputStartdate" class="form-label fw-bold">Start Date</label>
-            <input type="date" class="form-control border-success" id="inputStartdate" name="inputStartdate"
+            <input type="date" class="form-control border-success" id="inputStartdate" name="inputStartdate" value="{{.UpdateProject.StartDate}}"
               value="inputStartdate">
           </div>
           <div class="Enddate mb-4">
             <label for="inputEnddate" class="form-label fw-bold">End Date</label>
-            <input type="date" class="form-control border-success" id="inputEnddate" name="inputEnddate"
+            <input type="date" class="form-control border-success" id="inputEnddate" name="inputEnddate" value="{{.UpdateProject.EndDate}}"
               value="inputEnddate">
           </div>
         </div>
@@ -67,22 +67,22 @@
         <div class="mb-3">
           <label for="inputDescription" class="form-label fw-bold">Description </label>
           <textarea class="form-control border-success" id="inputDescription" name="inputDescription"
-            value="inputDescription" cols="30" rows="3"></textarea>
+          cols="30" rows="3">{{.UpdateProject.Description}}</textarea>
         </div>
         <div>
           <label class="mb-3 fw-bold" for="checkbox">Technologies</label>
         </div>
         <div class="checkbox">
           <div class="checkbox-left">
-            <input class="input-checkbox" type="checkbox" id="nodejs" name="nodejs" value="fa-brands fa-node-js">
+            <input class="input-checkbox" type="checkbox" id="nodejs" name="nodejs" value="node-js"{{.UpdateProject.Nodejs}}>
             <label for="nodejs"> Node Js</label><br>
-            <input class="input-checkbox" type="checkbox" id="react" name="react" value="fa-brands fa-react">
+            <input class="input-checkbox" type="checkbox" id="react" name="react" value="react"{{.UpdateProject.React}}>
             <label for="react" style="margin-top:20px;"> React Js</label><br>
           </div>
           <div class="checkbox-right">
-            <input class="input-checkbox" type="checkbox" id="java" name="java" value="fa-brands fa-java">
+            <input class="input-checkbox" type="checkbox" id="java" name="java" value="java"{.UpdateProject.Java}}>
             <label for="java"> Java</label><br>
-            <input class="input-checkbox" type="checkbox" id="python" name="python" value="fa-brands fa-python">
+            <input class="input-checkbox" type="checkbox" id="python" name="python" value="python"{{.UpdateProject.Python}}>
             <label for="python" style="margin-top:20px;"> Python</label><br>
           </div>
         </div>
@@ -93,7 +93,7 @@
         </div>
 
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-          <button type="submit" class="btn bg-orange text-white px-3">Submit</button>
+          <button type="submit" class="btn rounded-pill bg-orange text-white px-3" style="width:120px;">Submit</button>
         </div>
       </form>
     </div>
