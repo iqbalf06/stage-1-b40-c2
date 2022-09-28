@@ -4,12 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"math"
 	"net/http"
 	"personal-web/connection"
 	"strconv"
 	"text/template"
-	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -28,10 +26,10 @@ func main() {
 	route.HandleFunc("/add-project", formAddProject).Methods("GET")
 	route.HandleFunc("/add-project", addProject).Methods("POST")
 	route.HandleFunc("/contact", contact).Methods("GET")
-	route.HandleFunc("/project-detail/{index}", projectDetail).Methods("GET") //index url params
-	route.HandleFunc("/delete-project/{index}", deleteProject).Methods("GET")
+	route.HandleFunc("/project-detail/{id}", projectDetail).Methods("GET") //index url params
+	route.HandleFunc("/delete-project/{id}", deleteProject).Methods("GET")
 
-	route.HandleFunc("/update-project/{index}", updateProject).Methods("GET")
+	route.HandleFunc("/update-project/{id}", updateProject).Methods("GET")
 	route.HandleFunc("/submit-update/{id}", submitUpdate).Methods("POST")
 
 	fmt.Println("server running on port 5000")
@@ -53,9 +51,6 @@ type Project struct {
 	Duration    string
 }
 
-// deklarasi variabel global = array/slice
-var dataProject = []Project{}
-
 // menampilkan page dan data
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -67,7 +62,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// memanggil variabel conn dari package connection
-	data, _ := connection.Conn.Query(context.Background(), "SELECT id, name, description FROM tb_projects")
+	data, _ := connection.Conn.Query(context.Background(), "SELECT id, name, description FROM tb_projects ORDER BY id DESC")
 	// fmt.Println(data)
 
 	var result []Project //variabel result dan slice dan struct yang punya type data
@@ -87,7 +82,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 		"Projects": result, //properi yang berisi result query diatas dikirim menggunakan map string
 	}
 
-	fmt.Println(result)
+	w.WriteHeader(http.StatusOK)
 
 	tmpl.Execute(w, resData) //menampilkan response dari views
 }
@@ -117,54 +112,40 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 	var startDate = r.PostForm.Get("inputStartdate")
 	var endDate = r.PostForm.Get("inputEnddate")
 	var description = r.PostForm.Get("inputDescription")
-	nodejs := r.PostForm.Get("nodejs")
-	react := r.PostForm.Get("react")
-	java := r.PostForm.Get("java")
-	python := r.PostForm.Get("python")
 
-	layout := ("2006-01-02")
-	startDateParse, _ := time.Parse(layout, startDate)
-	endDateParse, _ := time.Parse(layout, endDate)
+	// layout := ("2006-01-02")
+	// startDateParse, _ := time.Parse(layout, startDate)
+	// endDateParse, _ := time.Parse(layout, endDate)
 
-	hours := endDateParse.Sub(startDateParse).Hours()
-	days := hours / 24
-	weeks := math.Round(days / 7)
-	months := math.Round(days / 30)
-	years := math.Round(days / 365)
+	// hours := endDateParse.Sub(startDateParse).Hours()
+	// days := hours / 24
+	// weeks := math.Round(days / 7)
+	// months := math.Round(days / 30)
+	// years := math.Round(days / 365)
 
-	var duration string
+	// var duration string
 
-	if years > 0 {
-		duration = strconv.FormatFloat(years, 'f', 0, 64) + "year"
-	} else if months > 0 {
-		duration = strconv.FormatFloat(months, 'f', 0, 64) + " Month"
-	} else if weeks > 0 {
-		duration = strconv.FormatFloat(weeks, 'f', 0, 64) + " Week"
-	} else if days > 0 {
-		duration = strconv.FormatFloat(days, 'f', 0, 64) + " Day"
-	} else if hours > 0 {
-		duration = strconv.FormatFloat(hours, 'f', 0, 64) + " Hour"
-	} else {
-		duration = "0 Days"
+	// if years > 0 {
+	// 	duration = strconv.FormatFloat(years, 'f', 0, 64) + "year"
+	// } else if months > 0 {
+	// 	duration = strconv.FormatFloat(months, 'f', 0, 64) + " Month"
+	// } else if weeks > 0 {
+	// 	duration = strconv.FormatFloat(weeks, 'f', 0, 64) + " Week"
+	// } else if days > 0 {
+	// 	duration = strconv.FormatFloat(days, 'f', 0, 64) + " Day"
+	// } else if hours > 0 {
+	// 	duration = strconv.FormatFloat(hours, 'f', 0, 64) + " Hour"
+	// } else {
+	// 	duration = "0 Days"
+	// }
+
+	//mengurutkan value dari postform dan tag input
+	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO tb_projects(name, start_date, end_date, description) VALUES ($1, $2, $3, $4)", projectName, startDate, endDate, description)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+		return
 	}
-
-	//pemanggilan type struct dan variabel global dan object diatas, sama seperti object di JS
-	var newProject = Project{ //type struct dari Project
-		ProjectName: projectName,
-		StartDate:   startDate,
-		EndDate:     endDate,
-		Description: description,
-		Nodejs:      nodejs,
-		React:       react,
-		Java:        java,
-		Python:      python,
-		Duration:    duration,
-	}
-
-	// untuk push / append data
-	dataProject = append(dataProject, newProject) //penampung dan isi data
-
-	fmt.Println(dataProject)
 
 	http.Redirect(w, r, "/", http.StatusMovedPermanently) //untuk meredirect kehalaman home.
 
@@ -194,23 +175,13 @@ func projectDetail(w http.ResponseWriter, r *http.Request) {
 
 	var ProjectDetail = Project{}
 
-	index, _ := strconv.Atoi(mux.Vars(r)["index"]) //mengconvert string to integer dan menangkap dari params(id) dari url
+	id, _ := strconv.Atoi(mux.Vars(r)["id"]) //mengconvert string to integer dan menangkap dari params(id) dari url
 
-	// perulangan/looping penampung data index dan data project
-	for i, data := range dataProject {
-		if i == index { //kondisi index looping = index url params
-			ProjectDetail = Project{
-				ProjectName: data.ProjectName,
-				Description: data.Description,
-				StartDate:   data.StartDate,
-				EndDate:     data.EndDate,
-				Duration:    data.Duration,
-				Nodejs:      data.Nodejs,
-				React:       data.React,
-				Java:        data.Java,
-				Python:      data.Python,
-			}
-		}
+	err = connection.Conn.QueryRow(context.Background(), "SELECT id, name, description FROM tb_projects WHERE id=$1", id).Scan(&ProjectDetail.ID, &ProjectDetail.ProjectName, &ProjectDetail.Description)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
 	}
 
 	data := map[string]interface{}{ //variabel data
@@ -225,10 +196,14 @@ func projectDetail(w http.ResponseWriter, r *http.Request) {
 
 func deleteProject(w http.ResponseWriter, r *http.Request) {
 
-	index, _ := strconv.Atoi(mux.Vars(r)["index"])
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
 
-	dataProject = append(dataProject[:index], dataProject[index+1:]...)
-	fmt.Println(dataProject)
+	_, err := connection.Conn.Exec(context.Background(), "DELETE FROM tb_projects WHERE id=$1", id)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("message : " + err.Error()))
+	}
 
 	http.Redirect(w, r, "/", http.StatusMovedPermanently) //untuk meredirect kehalaman home.
 
@@ -243,24 +218,7 @@ func updateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var UpdateProject = Project{}
-	index, _ := strconv.Atoi(mux.Vars(r)["index"])
-
-	for i, data := range dataProject {
-		if index == i { //kondisi index looping = index url params
-			UpdateProject = Project{
-				ProjectName: data.ProjectName,
-				Description: data.Description,
-				StartDate:   data.StartDate,
-				EndDate:     data.EndDate,
-			}
-		}
-	}
-	data := map[string]interface{}{ //variabel data
-		"UpdateProject": UpdateProject, //properti dan isinya
-	}
-
-	tmpl.Execute(w, data)
+	tmpl.Execute(w, nil)
 }
 
 func submitUpdate(w http.ResponseWriter, r *http.Request) {
@@ -269,60 +227,6 @@ func submitUpdate(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	id, _ := strconv.Atoi(mux.Vars(r)["id"])
-
-	//variabel object untuk menampung data dari tag input.
-	var projectName = r.PostForm.Get("inputProjectName")
-	var startDate = r.PostForm.Get("inputStartdate")
-	var endDate = r.PostForm.Get("inputEnddate")
-	var description = r.PostForm.Get("inputDescription")
-	nodejs := r.PostForm.Get("nodejs")
-	react := r.PostForm.Get("react")
-	java := r.PostForm.Get("java")
-	python := r.PostForm.Get("python")
-
-	layout := "2006-01-02"
-	startDateParse, _ := time.Parse(layout, startDate)
-	endDateParse, _ := time.Parse(layout, endDate)
-
-	hours := endDateParse.Sub(startDateParse).Hours()
-	days := hours / 24
-	weeks := math.Round(days / 7)
-	months := math.Round(days / 30)
-	years := math.Round(days / 365)
-
-	var duration string
-
-	if years > 0 {
-		duration = strconv.FormatFloat(years, 'f', 0, 64) + "year"
-	} else if months > 0 {
-		duration = strconv.FormatFloat(months, 'f', 0, 64) + " Month"
-	} else if weeks > 0 {
-		duration = strconv.FormatFloat(weeks, 'f', 0, 64) + " Week"
-	} else if days > 0 {
-		duration = strconv.FormatFloat(days, 'f', 0, 64) + " Day"
-	} else if hours > 0 {
-		duration = strconv.FormatFloat(hours, 'f', 0, 64) + " Hour"
-	} else {
-		duration = "0 Days"
-	}
-
-	//pemanggilan type struct dan variabel global dan object diatas, sama seperti object di JS
-	var newProject = Project{ //type struct dari Project
-		ProjectName: projectName,
-		StartDate:   startDate,
-		EndDate:     endDate,
-		Description: description,
-		Nodejs:      nodejs,
-		React:       react,
-		Java:        java,
-		Python:      python,
-		Duration:    duration,
-	}
-
-	dataProject[id] = newProject
-
-	fmt.Println(dataProject)
 
 	http.Redirect(w, r, "/", http.StatusMovedPermanently) //untuk meredirect kehalaman home.
 
