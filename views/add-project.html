@@ -51,13 +51,13 @@
           <input type="text" class="form-control border-success" id="inputProjectName" name="inputProjectName">
         </div>
 
-        <div class="inputDate">
-          <div class="Startdate mb-4">
+        <div class="row">
+          <div class="col mb-4">
             <label for="inputStartdate" class="form-label fw-bold">Start Date</label>
             <input type="date" class="form-control border-success" id="inputStartdate" name="inputStartdate"
               value="inputStartdate">
           </div>
-          <div class="Enddate mb-4">
+          <div class="col mb-4">
             <label for="inputEnddate" class="form-label fw-bold">End Date</label>
             <input type="date" class="form-control border-success" id="inputEnddate" name="inputEnddate"
               value="inputEnddate">
@@ -71,19 +71,19 @@
         </div>
         <div>
           <label class="mb-3 fw-bold" for="checkbox">Technologies</label>
-        </div>
-        <div class="checkbox">
-          <div class="checkbox-left">
-            <input class="input-checkbox" type="checkbox" id="nodejs" name="nodejs" value="fa-brands fa-node-js">
-            <label for="nodejs"> Node Js</label><br>
-            <input class="input-checkbox" type="checkbox" id="react" name="react" value="fa-brands fa-react">
-            <label for="reactjs" style="margin-top:20px;"> React Js</label><br>
-          </div>
-          <div class="checkbox-right">
-            <input class="input-checkbox" type="checkbox" id="java" name="java" value="fa-brands fa-java">
-            <label for="java"> Java</label><br>
-            <input class="input-checkbox" type="checkbox" id="python" name="python" value="fa-brands fa-python">
-            <label for="python" style="margin-top:20px;"> Python</label><br>
+          <div class="row">
+            <div class="col">
+              <input class="input-checkbox" type="checkbox" id="nodejs" name="nodejs" value="node-js">
+              <label for="nodejs"> Node Js</label><br>
+              <input class="input-checkbox" type="checkbox" id="react" name="react" value="react">
+              <label for="react" style="margin-top:20px;"> React Js</label><br>
+            </div>
+            <div class="col">
+              <input class="input-checkbox" type="checkbox" id="java" name="java" value="java">
+              <label for="java"> Java</label><br>
+              <input class="input-checkbox" type="checkbox" id="python" name="python" value="python">
+              <label for="python" style="margin-top:20px;"> Python</label><br>
+            </div>
           </div>
         </div>
 

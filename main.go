@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"personal-web/connection"
 	"strconv"
 	"text/template"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -38,7 +40,14 @@ func main() {
 type Project struct {
 	ID          int
 	ProjectName string
+	StartDate   string
+	EndDate     string
 	Description string
+	Nodejs      string
+	React       string
+	Java        string
+	Python      string
+	Duration    string
 }
 
 // deklarasi variabel global = array/slice
@@ -102,12 +111,51 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 
 	//variabel object untuk menampung data dari tag input.
 	var projectName = r.PostForm.Get("inputProjectName")
+	var startDate = r.PostForm.Get("inputStartdate")
+	var endDate = r.PostForm.Get("inputEnddate")
 	var description = r.PostForm.Get("inputDescription")
+	nodejs := r.PostForm.Get("nodejs")
+	react := r.PostForm.Get("react")
+	java := r.PostForm.Get("java")
+	python := r.PostForm.Get("python")
+
+	layout := ("2006-01-02")
+	startDateParse, _ := time.Parse(layout, startDate)
+	endDateParse, _ := time.Parse(layout, endDate)
+
+	hours := endDateParse.Sub(startDateParse).Hours()
+	days := hours / 24
+	weeks := math.Round(days / 7)
+	months := math.Round(days / 30)
+	years := math.Round(days / 365)
+
+	var duration string
+
+	if years > 0 {
+		duration = strconv.FormatFloat(years, 'f', 0, 64) + "year"
+	} else if months > 0 {
+		duration = strconv.FormatFloat(months, 'f', 0, 64) + " Month"
+	} else if weeks > 0 {
+		duration = strconv.FormatFloat(weeks, 'f', 0, 64) + " Week"
+	} else if days > 0 {
+		duration = strconv.FormatFloat(days, 'f', 0, 64) + " Day"
+	} else if hours > 0 {
+		duration = strconv.FormatFloat(hours, 'f', 0, 64) + " Hour"
+	} else {
+		duration = "0 Days"
+	}
 
 	//pemanggilan type struct dan variabel global dan object diatas, sama seperti object di JS
 	var newProject = Project{ //type struct dari Project
 		ProjectName: projectName,
+		StartDate:   startDate,
+		EndDate:     endDate,
 		Description: description,
+		Nodejs:      nodejs,
+		React:       react,
+		Java:        java,
+		Python:      python,
+		Duration:    duration,
 	}
 
 	// untuk push / append data
@@ -134,7 +182,7 @@ func contact(w http.ResponseWriter, r *http.Request) {
 
 func projectDetail(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	var tmpl, err = template.ParseFiles("views/myproject-detail.html")
+	var tmpl, err = template.ParseFiles("views/project-detail.html")
 
 	if err != nil {
 		w.Write([]byte("message : " + err.Error()))
@@ -151,6 +199,13 @@ func projectDetail(w http.ResponseWriter, r *http.Request) {
 			ProjectDetail = Project{
 				ProjectName: data.ProjectName,
 				Description: data.Description,
+				StartDate:   data.StartDate,
+				EndDate:     data.EndDate,
+				Duration:    data.Duration,
+				Nodejs:      data.Nodejs,
+				React:       data.React,
+				Java:        data.Java,
+				Python:      data.Python,
 			}
 		}
 	}
