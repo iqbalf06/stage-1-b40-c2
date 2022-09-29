@@ -29,15 +29,33 @@
           <li class="nav-item">
             <a class="nav-link text-o active fw-bold" aria-current="page" href="/">Home</a>
           </li>
+          {{if .DataSession.IsLogin}}
           <li class="nav-item">
             <a class="nav-link text-o active" aria-current="page" href="/add-project">Add Project</a>
+          {{end}}
           </li>
         </ul>
+
+        {{if .DataSession.IsLogin}}
+          <a class="text-decoration-none text-black" href="#">Hallo, {{.DataSession.UserName}}</a>
+          <a href="/logout" class="btn text-black mx-3">Logout</a>
+        {{else}}
+          <a href="/login" class="btn text-black mx-3 border border-light">Login</a>
+        {{end}}
 
         <a href="/contact" class="btn bg-orange text-white px-3">Contact Me</a>
       </div>
     </div>
   </nav>
+
+  {{if .DataSession.FlashData}}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>{{.DataSession.FlashData}}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+  {{end}}
+
+
 
   <div class="card mb-3"
     style=" height: 500px; max-width: 1024px; box-shadow: 0px 0px 18px 5px rgb(152, 151, 151); margin: 110px auto;">
@@ -108,16 +126,19 @@
 
   </div>
 
+
   <div class="bg-white my-5">
     <div class="container">
       <h1 class="mb-5 fw-bold text-center py-3"> MY PROJECT</h1>
-
+      {{if .DataSession.IsLogin}}
       <div class="add-project" style="text-align: end;">
         <a href="/add-project" class="btn btn-secondary bg-orange text-white">Add New Project</a>
       </div>
+      {{end}}
 
       <div id="projects">
         <div class="row row-cols-1 row-cols-md-3 g-4">
+          {{if .DataSession.IsLogin}}
           {{range $index, $data := .Projects}}
           
           <div class="col">
@@ -148,6 +169,7 @@
               </div>
             </div>
           </div>
+          {{end}}
           {{end}}
         </div>
       </div>
