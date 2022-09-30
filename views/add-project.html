@@ -35,7 +35,7 @@
         </ul>
         {{if .DataSession.IsLogin}}
         <a class="text-decoration-none text-black" href="#">Hallo, {{.DataSession.UserName}}</a>
-        <a href="/logout" class="btn text-black mx-3">Logout</a>
+        <a href="/logout" class="btn text-black mx-3 border border-light">Logout</a>
       {{else}}
         <a href="/login" class="btn text-black mx-3">Login</a>
       {{end}}
@@ -51,7 +51,7 @@
   <div class="container-fluid d-flex justify-content-center align-items-center">
     <div class="container-form">
       <h2 class="mb-5 fw-bold text-center my-3">ADD MY PROJECT</h2>
-      <form action="/add-project" method="post">
+      <form action="/add-project" method="POST" enctype="multipart/form-data">
         <div class="mb-3">
           <label for="inputProjectName" class="form-label fw-bold">Project Name</label>
           <input type="text" class="form-control border-success" id="inputProjectName" name="inputProjectName">
@@ -79,15 +79,15 @@
           <label class="mb-3 fw-bold" for="checkbox">Technologies</label>
           <div class="row">
             <div class="col">
-              <input class="input-checkbox" type="checkbox" id="nodejs" name="nodejs" value="node-js">
+              <input class="input-checkbox" type="checkbox" id="nodejs" name="technologies" value="node-js">
               <label for="nodejs"> Node Js</label><br>
-              <input class="input-checkbox" type="checkbox" id="react" name="react" value="react">
+              <input class="input-checkbox" type="checkbox" id="react" name="technologies" value="react">
               <label for="react" style="margin-top:20px;"> React Js</label>
             </div>
             <div class="col">
-              <input class="input-checkbox" type="checkbox" id="java" name="java" value="java">
+              <input class="input-checkbox" type="checkbox" id="java" name="technologies" value="java">
               <label for="java"> Java</label><br>
-              <input class="input-checkbox" type="checkbox" id="python" name="python" value="python">
+              <input class="input-checkbox" type="checkbox" id="python" name="technologies" value="python">
               <label for="python" style="margin-top:20px;"> Python</label>
             </div>
           </div>
@@ -95,7 +95,7 @@
 
         <div class="mb-3">
           <label for="inputImage" class="form-label fw-bold" style="margin-top:20px;">Upload Image</label>
-          <input type="file" class="form-control border-success" id="inputImage" value="">
+          <input type="file" class="form-control border-success" id="inputImage" name="inputImage">
         </div>
 
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -106,7 +106,7 @@
 
   </div>
 
-
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

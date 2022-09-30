@@ -38,8 +38,9 @@
 
         {{if .DataSession.IsLogin}}
           <a class="text-decoration-none text-black" href="#">Hallo, {{.DataSession.UserName}}</a>
-          <a href="/logout" class="btn text-black mx-3">Logout</a>
+          <a href="/logout" class="btn text-black mx-3 border border-light">Logout</a>
         {{else}}
+          <a href="/register" class="btn text-black border border-light">Register</a>
           <a href="/login" class="btn text-black mx-3 border border-light">Login</a>
         {{end}}
 
@@ -143,7 +144,7 @@
           
           <div class="col">
             <div class="card shadow p-3 m-5" style="width: 23rem; height: 33rem;">
-              <img src="/public/images/img-card1.jpg" class="card-img-top rounded-2" alt="...">
+              <img src="/uploads/{{$data.Image}}" class="card-img-top rounded-2" alt="...">
               <div class="card-body">
                 <a class="card-title text-decoration-none fw-bold text-dark fs-5"
                   href="/project-detail/{{$data.ID}}" target="_blank">{{$data.ProjectName}}</a>
@@ -151,15 +152,22 @@
                 <p class="card-text" style="height: 30%;">{{$data.Description}}</p>
 
                 <div class="col py-3">
-                  <i class="fa-brands fa-{{$data.Nodejs}} fa-2xl"></i>
-                  <i class="fa-brands fa-{{$data.React}} fa-2xl"></i>
-                  <i class="fa-brands fa-{{$data.Java}} fa-2xl"></i>
-                  <i class="fa-brands fa-{{$data.Python}} fa-2xl"></i>
+                  {{range $index, $item := .Techno}}
+                  {{if eq $item "node-js" }}
+                  <i class="fa-brands fa-node-js fa-2xl"></i>
+                  {{else if eq $item "react"}}
+                  <i class="fa-brands fa-react fa-2xl"></i>
+                  {{else if eq $item "java"}}
+                  <i class="fa-brands fa-java fa-2xl"></i>
+                  {{else if eq $item "python"}}
+                  <i class="fa-brands fa-python fa-2xl"></i>
+                  {{end}}
+                  {{end}}
                 </div>
 
                 <div class="btn-group">
                   <div class="btn-edit">
-                    <a href="/update-project/{{$index}}" class="btn-edt btn btn-secondary bg-orange text-white col-10 px-4">edit</a>
+                    <a href="/update-project/{{$data.ID}}" class="btn-edt btn btn-secondary bg-orange text-white col-10 px-4">edit</a>
                   </div>
                   <div class="btn-delete">
                     <a href="/delete-project/{{$data.ID}}" class="btn-dlt btn btn-secondary bg-orange text-white col-10 px-4">delete</a>

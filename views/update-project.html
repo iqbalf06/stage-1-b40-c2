@@ -51,7 +51,7 @@
   <div class="container-fluid d-flex justify-content-center align-items-center">
     <div class="container-form">
       <h2 class="mb-5 fw-bold text-center my-3">UPDATE MY PROJECT</h2>
-      <form action="/submit-update/{{.UpdateProject.Id}}" method="post">
+      <form action="/submit-update/{{.UpdateProject.ID}}" method="post" enctype="multipart/form-data">
         <div class="mb-3">
           <label for="inputProjectName" class="form-label fw-bold">Project Name</label>
           <input type="text" class="form-control border-success" id="inputProjectName" name="inputProjectName" value="{{.UpdateProject.ProjectName}}">
@@ -60,12 +60,12 @@
         <div class="row">
           <div class="col Startdate mb-4">
             <label for="inputStartdate" class="form-label fw-bold">Start Date</label>
-            <input type="date" class="form-control border-success" id="inputStartdate" name="inputStartdate" value="{{.UpdateProject.StartDate}}"
+            <input type="date" class="form-control border-success" id="inputStartdate" name="inputStartdate" value="{{.UpdateProject.Date_StartDate}}"
               value="inputStartdate">
           </div>
           <div class="col Enddate mb-4">
             <label for="inputEnddate" class="form-label fw-bold">End Date</label>
-            <input type="date" class="form-control border-success" id="inputEnddate" name="inputEnddate" value="{{.UpdateProject.EndDate}}"
+            <input type="date" class="form-control border-success" id="inputEnddate" name="inputEnddate" value="{{.UpdateProject.Date_EndDate}}"
               value="inputEnddate">
           </div>
         </div>
@@ -78,24 +78,24 @@
         <div>
           <label class="mb-3 fw-bold" for="checkbox">Technologies</label>
         </div>
-        <div class="checkbox">
-          <div class="checkbox-left">
-            <input class="input-checkbox" type="checkbox" id="nodejs" name="nodejs" value="node-js"{{.UpdateProject.Nodejs}}>
+        <div class="row">
+          <div class="col">
+            <input class="input-checkbox" type="checkbox" id="nodejs" name="technologies" value="node-js">
             <label for="nodejs"> Node Js</label><br>
-            <input class="input-checkbox" type="checkbox" id="react" name="react" value="react"{{.UpdateProject.React}}>
+            <input class="input-checkbox" type="checkbox" id="react" name="technologies" value="react">
             <label for="react" style="margin-top:20px;"> React Js</label><br>
           </div>
-          <div class="checkbox-right">
-            <input class="input-checkbox" type="checkbox" id="java" name="java" value="java"{.UpdateProject.Java}}>
+          <div class="col">
+            <input class="input-checkbox" type="checkbox" id="java" name="technologies" value="java">
             <label for="java"> Java</label><br>
-            <input class="input-checkbox" type="checkbox" id="python" name="python" value="python"{{.UpdateProject.Python}}>
+            <input class="input-checkbox" type="checkbox" id="python" name="technologies" value="python">
             <label for="python" style="margin-top:20px;"> Python</label><br>
           </div>
         </div>
 
         <div class="mb-3">
           <label for="inputImage" class="form-label fw-bold" style="margin-top:20px;">Upload Image</label>
-          <input type="file" class="form-control border-success" id="inputImage" value="">
+          <input type="file" class="form-control border-success" id="inputImage" name="inputImage">
         </div>
 
         <div class="d-grid gap-2 d-md-flex justify-content-md-end">

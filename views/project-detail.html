@@ -37,47 +37,55 @@
                 {{if .DataSession.IsLogin}}
                 <a class="text-decoration-none text-black" href="#">Hallo, {{.DataSession.UserName}}</a>
                 <a href="/logout" class="btn text-black mx-3">Logout</a>
-              {{else}}
+                {{else}}
                 <a href="/login" class="btn text-black mx-3">Login</a>
-              {{end}}
+                {{end}}
 
                 <a href="/contact" class="btn bg-orange text-white px-3">Contact Me</a>
             </div>
         </div>
     </nav>
 
-    {{.Id}}
     <div class="container">
         <h1 class="mb-5 fw-bold my-5 text-center">{{.Project.ProjectName}}</h1>
         <div class="row">
             <div class="col">
-                <img src="/public/images/img-card1.jpg" style="width: 800px; height: 500px;" alt="image cover">
+                <img src="/uploads/{{.Project.Image}}" style="width: 800px; height: 500px;" alt="image cover">
             </div>
             <div class="col">
                 <h2 class="py-4" style="margin-left: 50px;">Duration</h2>
                 <h3 class="icon-desc"> <i style="margin-left: 50px; margin-bottom: 30px;"
-                        class="fa-solid fa-calendar-days fa-lg"></i> {{.Project.StartDate}} - {{.Project.EndDate}} </h3>
-                <h3 class="icon-desc"> <i style="margin-left: 50px;" class="fa-solid fa-clock-rotate-left fa-lg"></i> {{.Project.Duration}} </h3>
+                        class="fa-solid fa-calendar-days fa-lg"></i> {{.Project.Date_StartDate}} -
+                    {{.Project.Date_EndDate}} </h3>
+                <h3 class="icon-desc"> <i style="margin-left: 50px;" class="fa-solid fa-clock-rotate-left fa-lg"></i>
+                    {{.Project.Duration}} </h3>
 
                 <h2 class="py-4" style="margin-left: 50px; margin-top: 50px;">Technologies</h2>
+
                 <div class="row" style="margin-left: 40px;">
+                    {{ range $index, $item := .Project.Techno }}
                     <div class="col">
-                        <h3 class="icon-desc text-capitalize"> <i class="fa-brands fa-{{.Project.Nodejs}} fa-xl"></i> {{.Project.Nodejs}} </h3>
-                        <h3 class="icon-desc text-capitalize"> <i class="fa-brands fa-{{.Project.React}} fa-xl"></i> {{.Project.React}} </h3>
+                        {{ if eq $item "node-js" }}
+                        <h3 class="icon-desc text-capitalize"> <i class="fa-brands fa-node-js fa-xl"></i> Node Js</h3>
+                        {{ else if eq $item "react" }}
+                        <h3 class="icon-desc text-capitalize"> <i class="fa-brands fa-react fa-xl"></i> React</h3>
                     </div>
                     <div class="col">
-                        <h3 class="icon-desc text-capitalize"> <i class="fa-brands fa-{{.Project.Java}} fa-xl"></i> {{.Project.Java}} </h3>
-                        <h3 class="icon-desc text-capitalize"> <i class="fa-brands fa-{{.Project.Python}} fa-xl"></i> {{.Project.Python}} </h3>
+                        {{ else if eq $item "java" }}
+                        <h3 class="icon-desc text-capitalize"> <i class="fa-brands fa-java fa-xl"></i> Java</h3>
+                        {{ else if eq $item "python" }}
+                        <h3 class="icon-desc text-capitalize"> <i class="fa-brands fa-python fa-xl"></i> Python</h3>
                     </div>
+                    {{end}} 
+                    {{end}}
                 </div>
 
             </div>
-
         </div>
-        <div class="col my-5 lh-sm fs-5" style="text-align: justify;">
-            <p>{{.Project.Description}}
-            <p>
-        </div>
+    </div>
+    
+    <div class="container my-5 fs-5" style="text-align: justify;">
+        <h4>{{.Project.Description}}</h4>
     </div>
 </body>
 
