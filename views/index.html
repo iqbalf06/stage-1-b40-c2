@@ -32,35 +32,26 @@
           {{if .DataSession.IsLogin}}
           <li class="nav-item">
             <a class="nav-link text-o active" aria-current="page" href="/add-project">Add Project</a>
-          {{end}}
+            {{end}}
           </li>
         </ul>
-
+        
         {{if .DataSession.IsLogin}}
-          <a class="text-decoration-none text-black" href="#">Hallo, {{.DataSession.UserName}}</a>
-          <a href="/logout" class="btn text-black mx-3 border border-light">Logout</a>
+        <a class="text-decoration-none text-black" href="#">Hallo, {{.DataSession.UserName}}</a>
+        <a href="/logout" class="btn text-black mx-3 border border-light">Logout</a>
         {{else}}
-          <a href="/register" class="btn text-black border border-light">Register</a>
-          <a href="/login" class="btn text-black mx-3 border border-light">Login</a>
+        <a href="/register" class="btn text-black border border-light">Register</a>
+        <a href="/login" class="btn text-black mx-3 border border-light">Login</a>
         {{end}}
-
+        
         <a href="/contact" class="btn bg-orange text-white px-3">Contact Me</a>
       </div>
     </div>
   </nav>
 
-  {{if .DataSession.FlashData}}
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>{{.DataSession.FlashData}}</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-  {{end}}
-
-
-
   <div class="card mb-3"
-    style=" height: 500px; max-width: 1024px; box-shadow: 0px 0px 18px 5px rgb(152, 151, 151); margin: 110px auto;">
-    <div class="row g-0">
+  style=" height: 500px; max-width: 1024px; box-shadow: 0px 0px 18px 5px rgb(152, 151, 151); margin: 110px auto;">
+  <div class="row g-0">
 
       <div class="col-md-8">
         <div class="card-body">
@@ -130,6 +121,12 @@
 
   <div class="bg-white my-5">
     <div class="container">
+      {{if .DataSession.FlashData}}
+      <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+        <strong>{{.DataSession.FlashData}}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {{end}}
       <h1 class="mb-5 fw-bold text-center py-3"> MY PROJECT</h1>
       {{if .DataSession.IsLogin}}
       <div class="add-project" style="text-align: end;">
@@ -141,14 +138,14 @@
         <div class="row row-cols-1 row-cols-md-3 g-4">
           {{if .DataSession.IsLogin}}
           {{range $index, $data := .Projects}}
-          
+
           <div class="col">
             <div class="card shadow p-3 m-5" style="width: 23rem; height: 33rem;">
               <img src="/uploads/{{$data.Image}}" class="card-img-top rounded-2" alt="...">
               <div class="card-body">
-                <a class="card-title text-decoration-none fw-bold text-dark fs-5"
-                  href="/project-detail/{{$data.ID}}" target="_blank">{{$data.ProjectName}}</a>
-                <p class="text-muted">duration: {{$data.Duration}}</p>
+                <a class="card-title text-decoration-none fw-bold text-dark fs-5" href="/project-detail/{{$data.ID}}"
+                  target="_blank">{{$data.ProjectName}}</a>
+                <p class="text-muted">duration: {{$data.Duration}} | {{$data.Author}}</p>
                 <p class="card-text" style="height: 30%;">{{$data.Description}}</p>
 
                 <div class="col py-3">
@@ -167,10 +164,12 @@
 
                 <div class="btn-group">
                   <div class="btn-edit">
-                    <a href="/update-project/{{$data.ID}}" class="btn-edt btn btn-secondary bg-orange text-white col-10 px-4">edit</a>
+                    <a href="/update-project/{{$data.ID}}"
+                      class="btn-edt btn btn-secondary bg-orange text-white col-10 px-4">edit</a>
                   </div>
                   <div class="btn-delete">
-                    <a href="/delete-project/{{$data.ID}}" class="btn-dlt btn btn-secondary bg-orange text-white col-10 px-4">delete</a>
+                    <a href="/delete-project/{{$data.ID}}"
+                      class="btn-dlt btn btn-secondary bg-orange text-white col-10 px-4">delete</a>
                   </div>
                 </div>
 
@@ -183,14 +182,14 @@
       </div>
       <div class="bg-white">
         <h1 class="mb-5 fw-bold text-center py-5"></h1>
-      </div>    
+      </div>
       <div class="bg-white">
         <h1 class="mb-5 fw-bold text-center py-5"></h1>
-      </div>   
+      </div>
 
     </div>
   </div>
- 
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa"
     crossorigin="anonymous"></script>

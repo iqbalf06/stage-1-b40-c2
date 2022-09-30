@@ -20,21 +20,19 @@ import (
 
 func main() {
 
-	route := mux.NewRouter() //variabel route dari mux router
+	route := mux.NewRouter()
 
 	connection.DatabaseConnect()
 
-	// route path folder public (js,css,images)
 	route.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public"))))
 
 	route.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads/"))))
 
-	//routing, menjalankan function da	ri html
 	route.HandleFunc("/", home).Methods("GET")
 	route.HandleFunc("/add-project", formAddProject).Methods("GET")
 	route.HandleFunc("/add-project", middleware.UploadFile(addProject)).Methods("POST")
 	route.HandleFunc("/contact", contact).Methods("GET")
-	route.HandleFunc("/project-detail/{id}", projectDetail).Methods("GET") //index url params
+	route.HandleFunc("/project-detail/{id}", projectDetail).Methods("GET")
 	route.HandleFunc("/delete-project/{id}", deleteProject).Methods("GET")
 
 	route.HandleFunc("/update-project/{id}", updateProject).Methods("GET")
@@ -59,7 +57,6 @@ type SessionData struct {
 
 var Data = SessionData{}
 
-// type data untuk variabel object Project
 type Project struct {
 	ID             int
 	ProjectName    string
@@ -86,13 +83,12 @@ type User struct {
 	Password string
 }
 
-// menampilkan page dan data
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	var tmpl, err = template.ParseFiles("views/index.html")
 
-	if err != nil { //untuk handle error. agar tau errornya
-		w.Write([]byte("message : " + err.Error())) //byte untuk menampilkan string jika ada error
+	if err != nil {
+		w.Write([]byte("message : " + err.Error()))
 		return
 	}
 
@@ -121,31 +117,30 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 	Data.FlashData = strings.Join(flashes, "")
 
-	// memanggil variabel conn dari package connection
-	data, _ := connection.Conn.Query(context.Background(), "SELECT id, name, description, duration, image, technologies FROM tb_projects ORDER BY id DESC")
-	// fmt.Println(data)
+	data, _ := connection.Conn.Query(context.Background(),
+		"SELECT tb_projects.id, tb_projects.name, description, duration, image, technologies, tb_user.name as author FROM tb_projects LEFT JOIN tb_user ON tb_projects.author_id = tb_user.id ORDER BY id DESC")
 
-	var result []Project //variabel result dan slice dan struct yang punya type data
-	for data.Next() {    //looping data
-		var each = Project{} //each untuk menampung data2 dari query.
+	var result []Project
+	for data.Next() {
+		var each = Project{}
 
-		var err = data.Scan(&each.ID, &each.ProjectName, &each.Description, &each.Duration, &each.Image, &each.Techno)
+		var err = data.Scan(&each.ID, &each.ProjectName, &each.Description, &each.Duration, &each.Image, &each.Techno, &each.Author)
 		if err != nil {
 			fmt.Println(err.Error())
-			return //jika error akan berhenti disini
+			return
 		}
 
-		result = append(result, each) //menampung data result. sperti push pda JS
+		result = append(result, each)
 	}
 
 	resData := map[string]interface{}{
 		"DataSession": Data,
-		"Projects":    result, //properi yang berisi result query diatas dikirim menggunakan map string
+		"Projects":    result,
 	}
 
 	w.WriteHeader(http.StatusOK)
 
-	tmpl.Execute(w, resData) //menampilkan response dari views
+	tmpl.Execute(w, resData)
 }
 
 func formAddProject(w http.ResponseWriter, r *http.Request) {
@@ -168,14 +163,13 @@ func formAddProject(w http.ResponseWriter, r *http.Request) {
 		Data.UserName = session.Values["Name"].(string)
 	}
 
-	data := map[string]interface{}{ //variabel data
+	data := map[string]interface{}{
 		"DataSession": Data,
 	}
 
 	tmpl.Execute(w, data)
 }
 
-// function untuk memasukkan dan menangkap data
 func addProject(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 
@@ -183,7 +177,6 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	//variabel object untuk menampung data dari tag input.
 	var projectName = r.PostForm.Get("inputProjectName")
 	var startDate = r.PostForm.Get("inputStartdate")
 	var endDate = r.PostForm.Get("inputEnddate")
@@ -195,11 +188,9 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 	dataContext := r.Context().Value("dataFile")
 	image := dataContext.(string)
 
-	//menyimpan session ke dalam cookie
 	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
 	session, _ := store.Get(r, "SESSION_KEY")
 
-	//mendapatkan user_id dari project
 	author := session.Values["ID"].(int)
 	fmt.Println((author))
 
@@ -229,7 +220,6 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		duration = "0 Days"
 	}
 
-	//mengurutkan value dari postform dan tag input
 	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO tb_projects(name, start_date, end_date, description, author_id, duration, image, technologies) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)", projectName, startDate, endDate, description, author, duration, image, techno)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -237,11 +227,10 @@ func addProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, "/", http.StatusMovedPermanently) //untuk meredirect kehalaman home.
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 
 }
 
-// menampilkan page dan data
 func contact(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	var tmpl, err = template.ParseFiles("views/contact.html")
@@ -250,11 +239,10 @@ func contact(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("message : " + err.Error()))
 		return
 	}
-	//menyimpan session ke dalam cookie
+
 	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
 	session, _ := store.Get(r, "SESSION_KEY")
 
-	//kondisi untuk Login
 	if session.Values["IsLogin"] != true {
 		Data.IsLogin = false
 	} else {
@@ -280,7 +268,7 @@ func projectDetail(w http.ResponseWriter, r *http.Request) {
 
 	var ProjectDetail = Project{}
 
-	id, _ := strconv.Atoi(mux.Vars(r)["id"]) //mengconvert string to integer dan menangkap dari params(id) dari url
+	id, _ := strconv.Atoi(mux.Vars(r)["id"])
 
 	err = connection.Conn.QueryRow(context.Background(), "SELECT id, name, description, start_date, end_date, duration, image, technologies FROM tb_projects WHERE id=$1", id).Scan(&ProjectDetail.ID, &ProjectDetail.ProjectName, &ProjectDetail.Description, &ProjectDetail.StartDate, &ProjectDetail.EndDate, &ProjectDetail.Duration, &ProjectDetail.Image, &ProjectDetail.Techno)
 
@@ -289,14 +277,12 @@ func projectDetail(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("message : " + err.Error()))
 	}
 
-	ProjectDetail.Date_StartDate = ProjectDetail.StartDate.Format("2006-01-02")
-	ProjectDetail.Date_EndDate = ProjectDetail.EndDate.Format("2006-01-02")
+	ProjectDetail.Date_StartDate = ProjectDetail.StartDate.Format("2 Jan 2006")
+	ProjectDetail.Date_EndDate = ProjectDetail.EndDate.Format("2 Jan 2006")
 
-	//menyimpan session ke dalam cookie
 	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
 	session, _ := store.Get(r, "SESSION_KEY")
 
-	//kondisi untuk Login
 	if session.Values["IsLogin"] != true {
 		Data.IsLogin = false
 	} else {
@@ -304,12 +290,10 @@ func projectDetail(w http.ResponseWriter, r *http.Request) {
 		Data.UserName = session.Values["Name"].(string)
 	}
 
-	data := map[string]interface{}{ //variabel data
-		"Project":     ProjectDetail, //properti dan isinya
+	data := map[string]interface{}{
+		"Project":     ProjectDetail,
 		"DataSession": Data,
 	}
-
-	// fmt.Println(data)
 
 	tmpl.Execute(w, data)
 
@@ -326,7 +310,7 @@ func deleteProject(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("message : " + err.Error()))
 	}
 
-	http.Redirect(w, r, "/", http.StatusMovedPermanently) //untuk meredirect kehalaman home.
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 
 }
 
@@ -339,11 +323,9 @@ func updateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//menyimpan session ke dalam cookie
 	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
 	session, _ := store.Get(r, "SESSION_KEY")
 
-	//kondisi untuk Login
 	if session.Values["IsLogin"] != true {
 		Data.IsLogin = false
 	} else {
@@ -377,7 +359,6 @@ func submitUpdate(w http.ResponseWriter, r *http.Request) {
 
 	id, _ := strconv.Atoi(mux.Vars(r)["id"])
 
-	//variabel object untuk menampung data dari tag input.
 	var projectName = r.PostForm.Get("inputProjectName")
 	var startDate = r.PostForm.Get("inputStartdate")
 	var endDate = r.PostForm.Get("inputEnddate")
@@ -388,11 +369,9 @@ func submitUpdate(w http.ResponseWriter, r *http.Request) {
 	dataContext := r.Context().Value("dataFile")
 	image := dataContext.(string)
 
-	//menyimpan session ke dalam cookie
 	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
 	session, _ := store.Get(r, "SESSION_KEY")
 
-	//mendapatkan user_id dari project
 	author := session.Values["ID"].(int)
 	fmt.Println((author))
 
@@ -424,7 +403,7 @@ func submitUpdate(w http.ResponseWriter, r *http.Request) {
 
 	_, err = connection.Conn.Exec(context.Background(), "UPDATE tb_projects SET name = $1, description = $2, start_date = $3, end_date = $4, duration = $5, image = $6, technologies= $7 WHERE id = $8", projectName, description, startDateParse, endDateParse, duration, image, techno, id)
 
-	http.Redirect(w, r, "/", http.StatusMovedPermanently) //untuk meredirect kehalaman home.
+	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 
 }
 
@@ -447,15 +426,12 @@ func register(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	//variabel object untuk menampung data dari tag input.
 	var name = r.PostForm.Get("inputName")
 	var email = r.PostForm.Get("inputEmail")
 	var password = r.PostForm.Get("inputPassword")
 
-	//encrypt password dengan passwordHash
 	passwordHash, _ := bcrypt.GenerateFromPassword([]byte(password), 10)
 
-	//mengurutkan value dari postform dan tag input
 	_, err = connection.Conn.Exec(context.Background(), "INSERT INTO tb_user(name, email, password) VALUES ($1, $2, $3)", name, email, passwordHash)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -485,13 +461,11 @@ func login(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	//variabel object untuk menampung data dari tag input.
 	var email = r.PostForm.Get("inputEmail")
 	var password = r.PostForm.Get("inputPassword")
 
 	user := User{}
 
-	//mengambil data email dan pengecekan dari tb_user
 	err = connection.Conn.QueryRow(context.Background(), "SELECT * FROM tb_user WHERE email=$1", email).Scan(&user.ID, &user.Name, &user.Email, &user.Password)
 
 	if err != nil {
@@ -503,7 +477,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(user)
 
-	//compare dan pengecekan password yang di input user dan password di database matching
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 
 	if err != nil {
@@ -513,20 +486,18 @@ func login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//menyimpan session ke dalam cookie
 	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
 	session, _ := store.Get(r, "SESSION_KEY")
 
-	//fungsi untuk menyimpan data kedalam session browser
 	session.Values["Name"] = user.Name
 	session.Values["Email"] = user.Email
 	session.Values["ID"] = user.ID
 	session.Values["IsLogin"] = true
 	session.Options.MaxAge = 10800 // 3 hours
 
-	session.AddFlash("Login Successful", "message") //value dan data yang disampaikan
+	session.AddFlash("Login Successful", "message")
 
-	session.Save(r, w) //mengirimkan respon untuk menyimpan session
+	session.Save(r, w)
 
 	http.Redirect(w, r, "/", http.StatusMovedPermanently)
 }
@@ -537,6 +508,6 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	session.Options.MaxAge = -1
 	session.Save(r, w)
 
-	http.Redirect(w, r, "/login", http.StatusSeeOther) //untuk meredirect kehalaman home.
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 
 }

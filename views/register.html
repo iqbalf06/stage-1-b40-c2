@@ -32,9 +32,11 @@
           <li class="nav-item">
             <a class="nav-link text-o active" aria-current="page" href="/">Home</a>
           </li>
+          {{if .DataSession.IsLogin}}
           <li class="nav-item">
             <a class="nav-link text-o active" aria-current="page" href="/add-project">Add Project</a>
           </li>
+          {{end}}
         </ul>
 
         <a href="/login" class="btn text-black mx-3 border border-light">Login</a>
