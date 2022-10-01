@@ -34,6 +34,7 @@ func main() {
 	route.HandleFunc("/contact", contact).Methods("GET")
 	route.HandleFunc("/project-detail/{id}", projectDetail).Methods("GET")
 	route.HandleFunc("/delete-project/{id}", deleteProject).Methods("GET")
+	route.HandleFunc("/challange", challange).Methods("GET")
 
 	route.HandleFunc("/update-project/{id}", updateProject).Methods("GET")
 	route.HandleFunc("/submit-update/{id}", middleware.UpdateFile(submitUpdate)).Methods("POST")
@@ -83,6 +84,47 @@ type User struct {
 	Password string
 }
 
+type Blog struct {
+	ID      int
+	Title   string
+	Content string
+}
+
+func challange(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	var tmpl, err = template.ParseFiles("views/challange.html")
+
+	if err != nil {
+		w.Write([]byte("message : " + err.Error()))
+		return
+	}
+
+	data, _ := connection.Conn.Query(context.Background(),
+		"SELECT id, title, content FROM tb_blog")
+
+	var result []Blog
+	for data.Next() {
+		var each = Blog{}
+
+		var err = data.Scan(&each.ID, &each.Title, &each.Content)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+
+		result = append(result, each)
+	}
+
+	resData := map[string]interface{}{
+		"Blog": result,
+	}
+
+	w.WriteHeader(http.StatusOK)
+
+	tmpl.Execute(w, resData)
+
+}
+
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	var tmpl, err = template.ParseFiles("views/index.html")
@@ -92,11 +134,9 @@ func home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//menyimpan session ke dalam cookie
 	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
 	session, _ := store.Get(r, "SESSION_KEY")
 
-	//kondisi untuk Login
 	if session.Values["IsLogin"] != true {
 		Data.IsLogin = false
 	} else {
@@ -151,23 +191,8 @@ func formAddProject(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("message : " + err.Error()))
 		return
 	}
-	//menyimpan session ke dalam cookie
-	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
-	session, _ := store.Get(r, "SESSION_KEY")
 
-	//kondisi untuk Login
-	if session.Values["IsLogin"] != true {
-		Data.IsLogin = false
-	} else {
-		Data.IsLogin = session.Values["IsLogin"].(bool)
-		Data.UserName = session.Values["Name"].(string)
-	}
-
-	data := map[string]interface{}{
-		"DataSession": Data,
-	}
-
-	tmpl.Execute(w, data)
+	tmpl.Execute(w, nil)
 }
 
 func addProject(w http.ResponseWriter, r *http.Request) {
@@ -323,16 +348,6 @@ func updateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
-	session, _ := store.Get(r, "SESSION_KEY")
-
-	if session.Values["IsLogin"] != true {
-		Data.IsLogin = false
-	} else {
-		Data.IsLogin = session.Values["IsLogin"].(bool)
-		Data.UserName = session.Values["Name"].(string)
-	}
-
 	var updateProject = Project{}
 
 	index, _ := strconv.Atoi(mux.Vars(r)["id"])
@@ -343,7 +358,6 @@ func updateProject(w http.ResponseWriter, r *http.Request) {
 	updateProject.Date_EndDate = updateProject.EndDate.Format("2006-01-02")
 
 	data := map[string]interface{}{
-		"DataSession":   Data,
 		"UpdateProject": updateProject,
 	}
 
@@ -451,7 +465,26 @@ func loginForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tmpl.Execute(w, nil)
+	var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
+	session, _ := store.Get(r, "SESSION_KEY")
+
+	fm := session.Flashes("message")
+
+	var flashes []string
+
+	if len(fm) > 0 {
+		session.Save(r, w)
+		for _, f1 := range fm {
+			flashes = append(flashes, f1.(string))
+		}
+	}
+
+	Data.FlashData = strings.Join(flashes, "")
+
+	data := map[string]interface{}{
+		"Login": Data,
+	}
+	tmpl.Execute(w, data)
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -469,20 +502,25 @@ func login(w http.ResponseWriter, r *http.Request) {
 	err = connection.Conn.QueryRow(context.Background(), "SELECT * FROM tb_user WHERE email=$1", email).Scan(&user.ID, &user.Name, &user.Email, &user.Password)
 
 	if err != nil {
-		fmt.Println("Email belum terdaftar")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("message : Email belum terdaftar" + err.Error()))
+		var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
+		session, _ := store.Get(r, "SESSION_KEY")
+
+		session.AddFlash("Email doesn't exist", "message")
+		session.Save(r, w)
+
+		http.Redirect(w, r, "/login", http.StatusMovedPermanently)
 		return
 	}
 
-	fmt.Println(user)
-
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
-
 	if err != nil {
-		fmt.Println("Password salah")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("message : Password salah" + err.Error()))
+		var store = sessions.NewCookieStore([]byte("SESSION_KEY"))
+		session, _ := store.Get(r, "SESSION_KEY")
+
+		session.AddFlash("Incorrect Password", "message")
+		session.Save(r, w)
+
+		http.Redirect(w, r, "/login", http.StatusMovedPermanently)
 		return
 	}
 
